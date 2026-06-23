@@ -1,0 +1,3 @@
+- const user = getUser(id);
++ const user = getUser(id);
++ console.log(user.password);

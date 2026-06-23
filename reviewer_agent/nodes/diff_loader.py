@@ -1,10 +1,8 @@
 def diff_loader(state):
-    sample_diff = """
-- const user = getUser(id);
-+ const user = getUser(id);
-+ console.log(user.password);
-"""
+
+    with open("sample_diffs/security.diff","r") as f:
+        diff = f.read()
 
     return {
-        "diff": sample_diff
+        "diff": diff
     }
