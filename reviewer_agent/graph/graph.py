@@ -4,7 +4,7 @@ from reviewer_agent.state.state import ReviewState
 from reviewer_agent.nodes.diff_loader import diff_loader
 from reviewer_agent.nodes.issue_detector import issue_detector
 from reviewer_agent.nodes.comment_generator import comment_generator
-
+from reviewer_agent.nodes.issue_validator import issue_validator
 
 builder = StateGraph(ReviewState)
 
