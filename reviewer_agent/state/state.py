@@ -4,4 +4,4 @@ class ReviewState(TypedDict):
     diff: str
     issues: List[dict]
     review_comments: List[str]
-    
+    logs: list[str]

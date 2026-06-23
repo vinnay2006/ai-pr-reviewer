@@ -1,21 +1,24 @@
 from reviewer_agent.llm import llm
+import json
 
 def issue_detector(state):
 
     diff = state["diff"]
 
     prompt = f"""
-You are a senior software engineer.
+You are a senior software engineer reviewing a pull request.
 
-Analyze this PR diff.
+Analyze the diff and return ONLY a JSON array.
 
-Identify:
-- Bugs
-- Security issues
-- Logic errors
-- Missing edge cases
+Format:
 
-Return findings in plain English.
+[
+  {{
+    "type": "security",
+    "severity": "high",
+    "reason": "Password is logged."
+  }}
+]
 
 Diff:
 {diff}
@@ -23,12 +26,20 @@ Diff:
 
     response = llm.invoke(prompt)
 
-    return {
-        "issues": [
+    try:
+        issues = json.loads(response.content)
+    except:
+        issues = [
             {
-                "type": "analysis",
-                "severity": "unknown",
+                "type": "unknown",
+                "severity": "low",
                 "reason": response.content
             }
         ]
+
+    return {
+        "issues": issues,
+        "logs": [
+        "Issue Detector completed"
+    ]
     }

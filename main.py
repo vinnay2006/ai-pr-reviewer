@@ -1,14 +1,20 @@
-from reviewer_agent.graph.graph import graph
-
-result = graph.invoke(
-    {
-        "diff": "",
-        "issues": [],
-        "review_comments": []
-    }
-)
-
 print("\n=== AI PR Review ===\n")
 
-for comment in result["review_comments"]:
+for issue, comment in zip(
+    result["issues"],
+    result["review_comments"]
+):
+
+    print(f"Type: {issue['type']}")
+    print(f"Severity: {issue['severity']}")
+    print(f"Reason: {issue['reason']}")
+    print()
+
+    print("Review Comment:")
     print(comment)
+
+    print("\n" + "-" * 50 + "\n")
+    print("\n=== Execution Logs ===\n")
+
+for log in result["logs"]:
+    print(log)
