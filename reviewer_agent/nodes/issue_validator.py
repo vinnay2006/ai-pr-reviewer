@@ -1,33 +1,38 @@
-from reviewer_agent.llm import llm
-
 def issue_validator(state):
 
-    validated = []
+    issues = state.get("issues", [])
 
-    for issue in state["issues"]:
+    seen = set()
+    cleaned_issues = []
 
-        prompt = f"""
-You are a senior software engineer.
+    for issue in issues:
 
-Issue:
-{issue}
+        # create a unique key for deduplication
+        key = (
+            issue.get("type", ""),
+            issue.get("file", ""),
+            issue.get("reason", "")[:50]
+        )
 
-Determine whether this is a real issue.
+        # skip duplicates
+        if key in seen:
+            continue
 
-Return only:
-VALID
-or
-INVALID
-"""
+        seen.add(key)
 
-        response = llm.invoke(prompt)
+        # normalize severity
+        severity = issue.get("severity", "low").lower()
 
-        if "VALID" in response.content.upper():
-            validated.append(issue)
+        if severity not in ["low", "medium", "high"]:
+            severity = "low"
+
+        cleaned_issues.append({
+            "type": issue.get("type", "unknown"),
+            "severity": severity,
+            "file": issue.get("file", "unknown"),
+            "reason": issue.get("reason", "No reason provided")
+        })
 
     return {
-        "issues": validated,
-        "logs": [
-        "Issue Validator completed"
-    ]
+        "issues": cleaned_issues
     }
