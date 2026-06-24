@@ -13,7 +13,7 @@ print("\n=== Files Changed ===")
 
 for file in result["files_changed"]:
     print(file)
-    
+
 print("\n=== AI PR Review ===\n")
 
 for issue, comment in zip(
@@ -29,6 +29,17 @@ for issue, comment in zip(
     print(comment)
 
     print("\n" + "-" * 50 + "\n")
+    print("\n=== FIXES ===\n")
+
+for fix in result["fixes"]:
+    print(fix)
+    print("-" * 50)
+    
+print("\n=== PATCHES ===\n")
+
+for patch in result.get("patches", []):
+    print(patch)
+    print("-" * 60)
 
 print("\n=== Execution Logs ===\n")
 
