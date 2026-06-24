@@ -1,15 +1,19 @@
 from reviewer_agent.graph.graph import graph
 
 result = graph.invoke({
-    "owner": "vinnay2006",
+    "owner": "Get-North-Path",
     "repo": "AOR-tracker",
-    "pr_number": 76,
+    "pr_number": 75,
     "diff": "",
     "issues": [],
     "review_comments": [],
     "logs": []
 })
+print("\n=== Files Changed ===")
 
+for file in result["files_changed"]:
+    print(file)
+    
 print("\n=== AI PR Review ===\n")
 
 for issue, comment in zip(

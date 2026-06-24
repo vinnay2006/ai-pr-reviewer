@@ -7,34 +7,41 @@ def issue_detector(state):
     diff = state["diff"]
 
     prompt = f"""
-You are a senior software engineer.
+    You are a senior software engineer.
 
-Return ONLY valid JSON array.
-NO markdown, NO explanation.
+    Review the diff.
 
-Format:
-[
-  {{
-    "type": "security",
-    "severity": "high",
-    "reason": "..."
-  }}
-]
+    Return ONLY JSON.
 
-Diff:
-{diff}
-"""
+    Format:
+
+    [
+    {{
+    "type": "",
+    "severity": "",
+    "file": "",
+    "reason": ""
+    }}
+    ]
+
+    Diff:
+    {diff}
+    """
 
     response = llm.invoke(prompt)
+    content = response.content.strip()
 
-    content = response.content
-
-    # itll  Remove ```json ... ```
+    # remove markdown safely
     content = re.sub(r"```json|```", "", content).strip()
 
     try:
         issues = json.loads(content)
-    except:
+
+        # safety fallback
+        if not isinstance(issues, list):
+            issues = []
+
+    except Exception:
         issues = [
             {
                 "type": "unknown",

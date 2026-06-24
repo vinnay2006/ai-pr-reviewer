@@ -1,4 +1,4 @@
-from typing import TypedDict, List
+from typing import TypedDict
 
 class ReviewState(TypedDict):
     owner: str
@@ -9,3 +9,5 @@ class ReviewState(TypedDict):
     issues: list
     review_comments: list
     logs: list
+
+    files_changed: list
