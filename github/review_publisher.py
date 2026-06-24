@@ -1,25 +1,21 @@
-import os
-import requests
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-
-headers = {
-    "Authorization": f"Bearer {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github+json"
-}
+from github.post_review import post_review
 
 
-def post_review_comment(owner, repo, pr_number, body):
+def review_publisher(state):
 
-    url = (
-        f"https://api.github.com/repos/"
-        f"{owner}/{repo}/issues/{pr_number}/comments"
+    status, response = post_review(
+        state["owner"],
+        state["repo"],
+        state["pr_number"],
+        state["review_comments"]
     )
 
-    response = requests.post(
-        url,
-        headers=headers,
-        json={"body": body}
+    logs = state.get("logs", [])
+
+    logs.append(
+        f"GitHub review posted: {status}"
     )
 
-    return response.status_code
+    return {
+        "logs": logs
+    }

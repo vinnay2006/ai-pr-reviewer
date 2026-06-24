@@ -1,9 +1,9 @@
 from reviewer_agent.graph.graph import graph
 
 result = graph.invoke({
-    "owner": "Get-North-Path",
-    "repo": "AOR-tracker",
-    "pr_number": 75,
+    "owner": "vinnay2006",
+    "repo": "ai-pr-reviewer-test",
+    "pr_number": 1,
     "diff": "",
     "issues": [],
     "review_comments": [],

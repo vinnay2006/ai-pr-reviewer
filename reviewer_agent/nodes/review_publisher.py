@@ -1,4 +1,4 @@
-from github.review_publisher import post_review_comment
+from github.review_publisher import post_review
 
 def review_publisher(state):
 
@@ -9,7 +9,7 @@ def review_publisher(state):
     comments = state.get("review_comments", [])
 
     for comment in comments:
-        post_review_comment(
+        post_review(
             owner,
             repo,
             pr_number,
@@ -17,7 +17,13 @@ def review_publisher(state):
         )
 
     logs = state.get("logs", [])
-    logs.append("Review comments published")
+    status, response = post_review( state["owner"],
+    state["repo"],
+    state["pr_number"],
+    state["review_comments"])
+
+    logs.append(f"GitHub Status: {status}")
+    logs.append(f"GitHub Response: {response[:300]}")
 
     return {
         "logs": logs
