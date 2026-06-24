@@ -2,30 +2,67 @@ import json
 import re
 from reviewer_agent.llm import llm
 
+
 def issue_detector(state):
 
-    diff = state["diff"]
+    lint_results = state.get("lint_results", "")
+    test_results = state.get("test_results", "")
+    security_results = state.get("security_results", "")
+    files = state.get("files_changed", [])
+    diff = state.get("diff", "")
 
     prompt = f"""
-    You are a senior software engineer.
+    You are a senior software engineer doing a PR review.
 
-    Review the diff.
+    You are given outputs from real tools:
+    - Lint tool
+    - Test runner
+    - Security scanner
+    - Git diff
 
-    Return ONLY JSON.
+    Your job:
+    1. Identify REAL issues only (avoid duplicates / noise)
+    2. Prioritize by severity
+    3. Use tool outputs as truth, not guesses
+    4. Map issues to correct files
 
-    Format:
+    ---
+
+    FILES CHANGED:
+    {files}
+
+    ---
+
+    LINT RESULTS:
+    {lint_results}
+
+    ---
+
+    TEST RESULTS:
+    {test_results}
+
+    ---
+
+    SECURITY RESULTS:
+    {security_results}
+
+    ---
+
+    GIT DIFF:
+    {diff}
+
+    ---
+
+    Return ONLY valid JSON (no markdown):
 
     [
-    {{
-    "type": "",
-    "severity": "",
-    "file": "",
-    "reason": ""
-    }}
+    {
+        "type": "bug | security | style",
+        "severity": "low | medium | high",
+        "file": "",
+        "reason": ""
+    }
     ]
-
-    Diff:
-    {diff}
     """
 
     response = llm.invoke(prompt)
@@ -37,7 +74,6 @@ def issue_detector(state):
     try:
         issues = json.loads(content)
 
-        # safety fallback
         if not isinstance(issues, list):
             issues = []
 
