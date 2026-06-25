@@ -1,0 +1,8 @@
+langchain
+langchain-google-genai
+langgraph
+requests
+python-dotenv
+bandit
+pytest
+flask
