@@ -29,7 +29,7 @@ VALID LINE NUMBERS PER FILE (only pick from these):
 LINT RESULTS (pre-parsed, one issue per line, treat as ground truth):
 {lint_results}
 
-TEST RESULTS:
+TEST RESULTS (pre-parsed, treat failed tests as confirmed bugs):
 {test_results}
 
 SECURITY RESULTS:
