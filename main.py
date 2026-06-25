@@ -5,19 +5,22 @@ result = graph.invoke({
     "repo": "ai-pr-reviewer-test",
     "pr_number": 4,
     "diff": "",
-    "commit_sha": "",          # NEW — gets filled by diff_loader
+    "commit_sha": "",
     "issues": [],
     "review_comments": [],
+    "line_map": {},          # NEW
     "logs": []
 })
 
 print("\n=== Files Changed ===")
-
 for file in result["files_changed"]:
     print(file)
 
-print("\n=== AI PR Review ===\n")
+print("\n=== Line Map ===")
+for fname, lines in result.get("line_map", {}).items():
+    print(f"{fname}: {lines}")
 
+print("\n=== AI PR Review ===\n")
 for issue, comment in zip(result["issues"], result["review_comments"]):
     print(f"Type: {issue['type']}")
     print(f"Severity: {issue['severity']}")
@@ -29,18 +32,15 @@ for issue, comment in zip(result["issues"], result["review_comments"]):
     print("\n" + "-" * 50 + "\n")
 
 print("\n=== FIXES ===\n")
-
 for fix in result.get("fixes", []):
     print(fix)
     print("-" * 50)
 
 print("\n=== PATCHES ===\n")
-
 for patch in result.get("patches", []):
     print(patch)
     print("-" * 60)
 
 print("\n=== Execution Logs ===\n")
-
 for log in result["logs"]:
     print(log)

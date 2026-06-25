@@ -10,12 +10,21 @@ def issue_detector(state):
     security_results = state.get("security_results", "")
     files = state.get("files_changed", [])
     diff = state.get("diff", "")
+    line_map = state.get("line_map", {})
+
+    # Format line map for prompt
+    line_map_str = ""
+    for fname, lines in line_map.items():
+        line_map_str += f"{fname}: lines {lines}\n"
 
     prompt = f"""
 You are a senior software engineer doing a PR review.
 
 FILES CHANGED:
 {files}
+
+VALID LINE NUMBERS PER FILE (only pick from these):
+{line_map_str}
 
 LINT RESULTS:
 {lint_results}
@@ -29,14 +38,14 @@ SECURITY RESULTS:
 GIT DIFF:
 {diff}
 
-Return ONLY valid JSON array (no markdown, no explanation, no backticks):
+Return ONLY valid JSON array (no markdown, no backticks):
 
 [
   {{
     "type": "bug | security | style",
     "severity": "low | medium | high",
     "file": "<filename>",
-    "line": <integer>,
+    "line": <integer, must be from the valid line numbers above>,
     "reason": "<explanation>"
   }}
 ]
@@ -47,10 +56,8 @@ Return ONLY valid JSON array (no markdown, no explanation, no backticks):
 
     print("=== RAW ===", repr(content[:300]))
 
-    # Strip ALL variations of code fences
     content = re.sub(r"(?i)```json", "", content)
-    content = re.sub(r"```", "", content)
-    content = content.strip()
+    content = re.sub(r"```", "", content).strip()
 
     try:
         issues = json.loads(content)
@@ -65,11 +72,21 @@ Return ONLY valid JSON array (no markdown, no explanation, no backticks):
             if not isinstance(issue, dict):
                 continue
 
+            fname = issue.get("file", "unknown")
+            raw_line = int(issue.get("line", 1))
+
+            # Clamp to nearest valid line number
+            valid_lines = line_map.get(fname, [])
+            if valid_lines:
+                line = min(valid_lines, key=lambda x: abs(x - raw_line))
+            else:
+                line = raw_line
+
             cleaned.append({
                 "type": issue.get("type", "unknown"),
                 "severity": normalize_severity(issue.get("severity", "low")),
-                "file": issue.get("file", "unknown"),
-                "line": int(issue.get("line", 1)),
+                "file": fname,
+                "line": line,
                 "reason": issue.get("reason", "No reason provided")
             })
 
