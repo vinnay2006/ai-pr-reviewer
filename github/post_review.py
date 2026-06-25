@@ -1,17 +1,32 @@
 import requests
 import os
 from dotenv import load_dotenv
-load_dotenv()
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-print("Token exists:", GITHUB_TOKEN is not None)
 
-def post_review(owner, repo, pr_number, comments):
+load_dotenv()
+
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+
+def post_review(owner, repo, pr_number, commit_sha, review_comments):
 
     url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/reviews"
 
+    # Build inline comments array for GitHub API
+    inline_comments = []
+
+    for comment in review_comments:
+        if isinstance(comment, dict) and comment.get("path") and comment.get("line"):
+            inline_comments.append({
+                "path": comment["path"],
+                "line": comment["line"],
+                "body": comment["body"]
+            })
+
     body = {
-        "body": "\n\n".join(comments),
-        "event": "COMMENT"
+        "commit_id": commit_sha,
+        "body": "AI PR Review — see inline comments below.",
+        "event": "COMMENT",
+        "comments": inline_comments
     }
 
     headers = {
