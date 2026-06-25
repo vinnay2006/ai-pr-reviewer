@@ -32,7 +32,7 @@ LINT RESULTS (pre-parsed, one issue per line, treat as ground truth):
 TEST RESULTS (pre-parsed, treat failed tests as confirmed bugs):
 {test_results}
 
-SECURITY RESULTS:
+SECURITY RESULTS (pre-parsed, treat high/medium severity as confirmed vulnerabilities):
 {security_results}
 
 GIT DIFF:
