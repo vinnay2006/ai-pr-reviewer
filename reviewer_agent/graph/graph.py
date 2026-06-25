@@ -13,6 +13,7 @@ from reviewer_agent.nodes.comment_generator import comment_generator
 from reviewer_agent.nodes.fix_generator import fix_generator
 from reviewer_agent.nodes.patch_generator import patch_generator
 from reviewer_agent.nodes.review_publisher import review_publisher
+from reviewer_agent.nodes.fix_router import fix_router
 builder = StateGraph(ReviewState)
 
 # Nodes
@@ -24,6 +25,7 @@ builder.add_node("security_runner", security_runner)
 builder.add_node("issue_detector", issue_detector)
 builder.add_node("issue_validator", issue_validator)
 builder.add_node("comment_generator", comment_generator)
+builder.add_node("fix_router", fix_router)
 builder.add_node(
     "fix_generator",
     fix_generator
@@ -61,10 +63,8 @@ builder.add_edge(
     "patch_generator",
     "comment_generator"
 )
-builder.add_edge(
-    "comment_generator",
-    "review_publisher"
-)
+builder.add_edge("comment_generator", "fix_router")
+builder.add_edge("fix_router", "review_publisher")
 
 builder.add_edge(
     "review_publisher",

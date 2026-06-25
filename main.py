@@ -8,7 +8,8 @@ result = graph.invoke({
     "commit_sha": "",
     "issues": [],
     "review_comments": [],
-    "line_map": {},          # NEW
+    "line_map": {},  
+    "approved": False,         # NEW
     "logs": []
 })
 

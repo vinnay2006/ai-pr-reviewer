@@ -9,7 +9,7 @@ class ReviewState(TypedDict):
 
     diff: str
     files_changed: list
-    line_map: dict          # NEW — {filename: [valid line numbers]}
+    line_map: dict
 
     lint_results: str
     test_results: str
@@ -19,4 +19,5 @@ class ReviewState(TypedDict):
     fixes: list
 
     review_comments: list
+    approved: bool          # NEW
     logs: list
