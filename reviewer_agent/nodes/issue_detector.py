@@ -26,7 +26,7 @@ FILES CHANGED:
 VALID LINE NUMBERS PER FILE (only pick from these):
 {line_map_str}
 
-LINT RESULTS:
+LINT RESULTS (pre-parsed, one issue per line, treat as ground truth):
 {lint_results}
 
 TEST RESULTS:

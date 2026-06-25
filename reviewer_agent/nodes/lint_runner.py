@@ -1,11 +1,16 @@
 from tools.lint.eslint_runner import run_eslint
+from tools.lint.lint_formatter import format_lint_results
+
 
 def lint_runner(state):
 
-    files = state["files_changed"]
+    lint_issues = run_eslint()
 
-    lint_output = run_eslint()
+    formatted = format_lint_results(lint_issues)
+
+    print("=== LINT RESULTS ===")
+    print(formatted)
 
     return {
-        "lint_results": lint_output
+        "lint_results": formatted
     }
