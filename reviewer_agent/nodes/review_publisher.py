@@ -1,10 +1,10 @@
 from github.post_review import post_review
+from dashboard.store import save_review
 
 def review_publisher(state):
 
     logs = state.get("logs", [])
 
-    # Check human approval
     if not state.get("approved", True):
         print("Skipping GitHub post — not approved.")
         logs.append("Review not posted — failed human approval gate.")
@@ -26,6 +26,15 @@ def review_publisher(state):
 
     logs.append(f"GitHub Status: {status}")
     logs.append(f"GitHub Response: {response[:300]}")
+
+    # Save to dashboard store
+    save_review(
+        owner,
+        repo,
+        pr_number,
+        state.get("issues", []),
+        logs
+    )
 
     return {
         "logs": logs

@@ -1,0 +1,117 @@
+[
+  {
+    "id": 1,
+    "owner": "vinnay2006",
+    "repo": "ai-pr-reviewer-test",
+    "pr_number": 13,
+    "pr_url": "https://github.com/vinnay2006/ai-pr-reviewer-test/pull/13",
+    "issues": [
+      {
+        "type": "security",
+        "severity": "high",
+        "file": "test3.py",
+        "line": 1,
+        "reason": "Hardcoding sensitive credentials directly in the code is a significant security risk. Passwords should be loaded from a secure configuration management system, environment variables, or a secrets manager, not stored in plain text in the source code."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test3.py",
+        "line": 2,
+        "reason": "The expression `1/0` will cause a `ZeroDivisionError` at runtime, leading to an application crash. This needs to be corrected to prevent division by zero. Additionally, the extraneous semicolons are not idiomatic Python and should be removed."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test3.py",
+        "line": 3,
+        "reason": "The line `nkjml,` is not valid Python syntax and will cause a `SyntaxError` or `NameError`, preventing the program from executing. Please remove or correct this line."
+      }
+    ],
+    "issue_count": 3,
+    "high": 3,
+    "medium": 0,
+    "low": 0,
+    "logs": [
+      "Human approved high severity review.",
+      "GitHub Status: 200",
+      "GitHub Response: {\"id\":4573677757,\"node_id\":\"PRR_kwDOTEQy2M8AAAABEJzIvQ\",\"user\":{\"login\":\"vinnay2006\",\"id\":179668325,\"node_id\":\"U_kgDOCrWFZQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/179668325?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/vinnay2006\",\"html_url\":\"https://github.com/vinnay2006"
+    ],
+    "timestamp": "2026-06-25 23:36:35"
+  },
+  {
+    "id": 2,
+    "owner": "vinnay2006",
+    "repo": "ai-pr-reviewer-test",
+    "pr_number": 14,
+    "pr_url": "https://github.com/vinnay2006/ai-pr-reviewer-test/pull/14",
+    "issues": [
+      {
+        "type": "security",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 3,
+        "reason": "Hardcoding sensitive credentials like passwords directly in the code is a security risk. These should be stored securely, for example, in environment variables or a secrets management system."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 7,
+        "reason": "The `divide` function attempts to divide by zero, which will always result in a `ZeroDivisionError` at runtime. The `b` parameter is unused."
+      },
+      {
+        "type": "security",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 10,
+        "reason": "The SQL query is constructed using f-strings, directly embedding the `username` input. This is vulnerable to SQL injection if `username` contains malicious characters. Use parameterized queries instead."
+      },
+      {
+        "type": "security",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 16,
+        "reason": "Using `eval()` with user-controlled input creates a critical security vulnerability, allowing arbitrary code execution. This function should be avoided with untrusted input."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 20,
+        "reason": "The `infinite` function contains an unconditional `while True` loop, which will cause it to run indefinitely and consume CPU resources, potentially leading to a denial of service."
+      },
+      {
+        "type": "style",
+        "severity": "low",
+        "file": "test2.py",
+        "line": 25,
+        "reason": "The variable `unused_variable` is assigned a value but never used. This indicates dead code or a potential oversight."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 30,
+        "reason": "Attempting to access `items[10]` will result in an `IndexError` because the list `items` only contains elements at indices 0, 1, and 2."
+      },
+      {
+        "type": "bug",
+        "severity": "high",
+        "file": "test2.py",
+        "line": 34,
+        "reason": "Attempting to access `data[\"age\"]` will result in a `KeyError` because the dictionary `data` does not contain a key named \"age\"."
+      }
+    ],
+    "issue_count": 8,
+    "high": 7,
+    "medium": 0,
+    "low": 1,
+    "logs": [
+      "Human approved high severity review.",
+      "GitHub Status: 200",
+      "GitHub Response: {\"id\":4573854197,\"node_id\":\"PRR_kwDOTEQy2M8AAAABEJ959Q\",\"user\":{\"login\":\"vinnay2006\",\"id\":179668325,\"node_id\":\"U_kgDOCrWFZQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/179668325?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/vinnay2006\",\"html_url\":\"https://github.com/vinnay2006"
+    ],
+    "timestamp": "2026-06-25 23:56:49"
+  }
+]

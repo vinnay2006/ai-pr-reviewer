@@ -3,7 +3,7 @@ from reviewer_agent.graph.graph import graph
 result = graph.invoke({
     "owner": "vinnay2006",
     "repo": "ai-pr-reviewer-test",
-    "pr_number": 4,
+    "pr_number": 14,
     "diff": "",
     "commit_sha": "",
     "issues": [],

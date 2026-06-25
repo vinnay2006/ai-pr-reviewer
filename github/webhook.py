@@ -8,6 +8,7 @@ import hashlib
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from reviewer_agent.graph.graph import graph
+from dashboard.store import save_review
 
 load_dotenv()
 
@@ -84,6 +85,7 @@ def webhook():
         })
 
         logs = result.get("logs", [])
+        save_review(owner, repo_name, pr_number, result.get("issues", []), logs)
         issues_found = len(result.get("issues", []))
 
         print(f"Pipeline complete. Issues found: {issues_found}", flush=True)

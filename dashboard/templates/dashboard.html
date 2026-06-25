@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PR Reviewer Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; }
+        .header { background: #161b22; padding: 20px 40px; border-bottom: 1px solid #30363d; }
+        .header h1 { font-size: 20px; color: #58a6ff; }
+        .header p { color: #8b949e; font-size: 13px; margin-top: 4px; }
+        .stats { display: flex; gap: 16px; padding: 24px 40px; }
+        .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px 24px; flex: 1; }
+        .stat-card .number { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+        .stat-card .label { color: #8b949e; font-size: 13px; }
+        .total .number { color: #58a6ff; }
+        .high .number { color: #f85149; }
+        .medium .number { color: #d29922; }
+        .low .number { color: #3fb950; }
+        .section { padding: 0 40px 40px; }
+        .section h2 { font-size: 16px; margin-bottom: 16px; color: #e6edf3; }
+        .review-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .pr-link { color: #58a6ff; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .pr-link:hover { text-decoration: underline; }
+        .timestamp { color: #8b949e; font-size: 12px; }
+        .badges { display: flex; gap: 8px; }
+        .badge { padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-high { background: #3d1a1a; color: #f85149; border: 1px solid #f85149; }
+        .badge-medium { background: #2d2008; color: #d29922; border: 1px solid #d29922; }
+        .badge-low { background: #0d2a12; color: #3fb950; border: 1px solid #3fb950; }
+        .issues-list { margin-top: 12px; }
+        .issue-item { padding: 8px 12px; background: #0d1117; border-radius: 6px; margin-bottom: 6px; font-size: 13px; border-left: 3px solid #30363d; }
+        .issue-item.high { border-left-color: #f85149; }
+        .issue-item.medium { border-left-color: #d29922; }
+        .issue-item.low { border-left-color: #3fb950; }
+        .issue-meta { color: #8b949e; font-size: 11px; margin-top: 2px; }
+        .empty { text-align: center; padding: 60px; color: #8b949e; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>AI PR Reviewer Dashboard</h1>
+    <p>Automated code review powered by LangGraph + Gemini</p>
+</div>
+
+<div class="stats" id="stats">
+    <div class="stat-card total"><div class="number" id="total-reviews">-</div><div class="label">Total Reviews</div></div>
+    <div class="stat-card total"><div class="number" id="total-issues">-</div><div class="label">Total Issues</div></div>
+    <div class="stat-card high"><div class="number" id="high-issues">-</div><div class="label">High Severity</div></div>
+    <div class="stat-card medium"><div class="number" id="medium-issues">-</div><div class="label">Medium Severity</div></div>
+    <div class="stat-card low"><div class="number" id="low-issues">-</div><div class="label">Low Severity</div></div>
+</div>
+
+<div class="section">
+    <h2>Recent Reviews</h2>
+    <div id="reviews-list"><div class="empty">No reviews yet. Open a PR to trigger a review.</div></div>
+</div>
+
+<script>
+    async function loadStats() {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        document.getElementById('total-reviews').textContent = data.total_reviews;
+        document.getElementById('total-issues').textContent = data.total_issues;
+        document.getElementById('high-issues').textContent = data.high;
+        document.getElementById('medium-issues').textContent = data.medium;
+        document.getElementById('low-issues').textContent = data.low;
+    }
+
+    async function loadReviews() {
+        const res = await fetch('/api/reviews');
+        const reviews = await res.json();
+        const container = document.getElementById('reviews-list');
+
+        if (!reviews.length) return;
+
+        container.innerHTML = '';
+
+        reviews.slice().reverse().forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'review-card';
+
+            const badges = [
+                r.high ? `<span class="badge badge-high">${r.high} High</span>` : '',
+                r.medium ? `<span class="badge badge-medium">${r.medium} Medium</span>` : '',
+                r.low ? `<span class="badge badge-low">${r.low} Low</span>` : ''
+            ].filter(Boolean).join('');
+
+            const issues = r.issues.map(i => `
+                <div class="issue-item ${i.severity}">
+                    ${i.reason}
+                    <div class="issue-meta">${i.file} · line ${i.line} · ${i.type} · ${i.severity}</div>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="review-header">
+                    <a class="pr-link" href="${r.pr_url}" target="_blank">
+                        ${r.owner}/${r.repo} #${r.pr_number}
+                    </a>
+                    <span class="timestamp">${r.timestamp}</span>
+                </div>
+                <div class="badges">${badges}</div>
+                ${r.issues.length ? `<div class="issues-list">${issues}</div>` : '<div style="color:#8b949e;font-size:13px;margin-top:8px;">No issues found</div>'}
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+    loadStats();
+    loadReviews();
+    setInterval(() => { loadStats(); loadReviews(); }, 10000);
+</script>
+
+</body>
+</html>
